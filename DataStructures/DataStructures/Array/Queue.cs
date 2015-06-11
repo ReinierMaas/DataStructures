@@ -5,8 +5,8 @@ namespace DataStructures.Array
     class Queue<T>
     {
         private T[] _storage;
-        public int Count { get; private set; } = 0;
-        public int Tail { get; private set; } = 0;
+        public int Count { get; private set; }
+        public int Tail { get; private set; }
         private int _size = 4;
         private static int _grow = 2;
 
