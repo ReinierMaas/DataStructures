@@ -59,6 +59,7 @@ namespace DataStructures.Array
 
         /// <summary>
         /// Index on the internal array
+        /// O(1)
         /// Possible: IndexOutOfRangeException
         /// </summary>
         /// <param name="index">Index in the array to change</param>

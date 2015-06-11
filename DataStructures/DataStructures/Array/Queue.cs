@@ -6,6 +6,7 @@ namespace DataStructures.Array
     {
         private T[] _storage;
         public int Count { get; private set; } = 0;
+        public int Tail { get; private set; } = 0;
         private int _size = 4;
         private static int _grow = 2;
 
@@ -15,33 +16,40 @@ namespace DataStructures.Array
         }
 
         /// <summary>
-        /// Pushes the item on the end of the array
-        /// Resizes the array if needed
+        /// Pushes the item on the end of the queue
+        /// Resizes the internal array if needed
         /// Amortized O(1)
         /// </summary>
-        /// <param name="item">Item to push on the stack</param>
+        /// <param name="item">Item to enqueue on the queue</param>
         public void Enqueue(T item)
         {
             if (Count == _size)
             {
                 _size *= _grow;
-                System.Array.Resize(ref _storage, _size);
+                T[] prevArray = _storage;
+                _storage = new T[_size];
+                System.Array.Copy(prevArray, Tail, _storage, 0, Count - Tail);
+                System.Array.Copy(prevArray, 0, _storage, Count - Tail, Tail);
+                Tail = 0;
             }
-            _storage[Count] = item;
+            int begin = (Tail + Count) % _size;
+            _storage[begin] = item;
             Count++;
         }
 
         /// <summary>
-        /// Pops the item from the end of the array
+        /// Dequeue the item from the end of the queue
         /// O(1)
         /// </summary>
-        /// <returns>Item that got pop from the stack</returns>
+        /// <returns>Item that got dequeued from the queue</returns>
         public T Dequeue()
         {
             if (Count == 0)
                 throw new InvalidOperationException();
+            T tmp = _storage[Tail];
             Count--;
-            return _storage[Count];
+            Tail = (Tail + 1) % _size;
+            return tmp;
         }
 
         /// <summary>
@@ -53,8 +61,7 @@ namespace DataStructures.Array
         {
             if (Count == 0)
                 throw new InvalidOperationException();
-            return _storage[Count - 1];
-
+            return _storage[Tail];
         }
 
         /// <summary>
@@ -69,17 +76,19 @@ namespace DataStructures.Array
             {
                 if (index >= 0 && index < Count)
                 {
+                    index = (Tail + index) % _size;
                     return _storage[index];
                 }
-                throw new IndexOutOfRangeException("List count: " + Count + " index: " + index);
+                throw new IndexOutOfRangeException("Queue count: " + Count + " index: " + index);
             }
             set
             {
                 if (index >= 0 && index < Count)
                 {
+                    index = (Tail + index) % _size;
                     _storage[index] = value;
                 }
-                throw new IndexOutOfRangeException("List count: " + Count + " index: " + index);
+                throw new IndexOutOfRangeException("Queue count: " + Count + " index: " + index);
             }
         }
     }
