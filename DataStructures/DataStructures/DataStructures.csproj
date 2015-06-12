@@ -49,17 +49,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Array\List.cs" />
+    <Compile Include="Array\Deque.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Array\Queue.cs" />
     <Compile Include="Array\Stack.cs" />
+    <Compile Include="Trees\Binary.cs" />
+    <Compile Include="Trees\RedAndBlack.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Heaps\" />
-    <Folder Include="Trees\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
