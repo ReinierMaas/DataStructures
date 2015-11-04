@@ -54,7 +54,6 @@ namespace DataStructures.Array
             if (Count == 0)
                 throw new InvalidOperationException();
             return _storage[Count - 1];
-
         }
 
         /// <summary>

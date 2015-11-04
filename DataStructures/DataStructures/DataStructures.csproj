@@ -54,6 +54,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Array\Queue.cs" />
     <Compile Include="Array\Stack.cs" />
+    <Compile Include="Trees\Node.cs" />
     <Compile Include="Trees\Binary.cs" />
     <Compile Include="Trees\RedAndBlack.cs" />
   </ItemGroup>

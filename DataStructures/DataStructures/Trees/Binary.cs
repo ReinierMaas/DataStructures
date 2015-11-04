@@ -4,21 +4,21 @@ using System.Collections.Generic;
 
 namespace DataStructures.Trees
 {
-    public class Binary<T> : IEnumerable<T> where T: IComparable<T>
+    public class Binary<T> : IEnumerable<T>, IDisposable where T : IComparable<T>
     {
-        private Node _root;
+        private Node<T> _root;
 
         public int Count => _root.Count;
 
         public void Insert(T item)
         {
-            Node newNode = new Node(item);
+            Node<T> newNode = new Node<T>(item);
             if (_root == null)
                 _root = newNode;
             else
             {
-                Node prevNode = _root;
-                Node treeNode = _root;
+                Node<T> prevNode = _root;
+                Node<T> treeNode = _root;
                 while (treeNode != null)
                 {
                     prevNode = treeNode;
@@ -32,48 +32,93 @@ namespace DataStructures.Trees
             }
         }
 
-        public bool Delete(T item)
+        /// <summary>
+        /// Recursive delete
+        /// </summary>
+        /// <param name="item">Item which is gonna be deleted</param>
+        public void Delete(T item)
         {
-            Node treeNode = _root;
+            _root = DeleteNode(_root, item);
+        }
+
+        /// <summary>
+        /// Recursive delete
+        /// </summary>
+        /// <param name="treeNode">Current subtree selected for deleting item</param>
+        /// <param name="item">Item which is gonna be deleted</param>
+        /// <returns>New subtree root</returns>
+        private static Node<T> DeleteNode(Node<T> treeNode, T item)
+        {
+            if (treeNode == null) return null;
+            switch (item.CompareTo(treeNode.Item))
+            {
+                case -1:
+                    treeNode.Left = DeleteNode(treeNode.Left, item);
+                    break;
+                case 1:
+                    treeNode.Right = DeleteNode(treeNode.Right, item);
+                    break;
+                default:
+                    //No childs
+                    if (treeNode.Left == null && treeNode.Right == null)
+                    {
+                        treeNode.Dispose();
+                        treeNode = null;
+                    }
+                    //One child
+                    else if (treeNode.Left == null)
+                    {
+                        Node<T> temp = treeNode;
+                        treeNode = treeNode.Right;
+                        temp.Dispose();
+                    }
+                    else if (treeNode.Right == null)
+                    {
+                        Node<T> temp = treeNode;
+                        treeNode = treeNode.Left;
+                        temp.Dispose();
+                    }
+                    //Two childs
+                    else
+                    {
+                        Node<T> temp = FindMin(treeNode.Right);
+                        treeNode.Item = temp.Item;
+                        treeNode.Right = DeleteNode(treeNode.Right, temp.Item);
+                    }
+                    break;
+            }
+            return treeNode;
+        }
+
+        private static Node<T> FindMin(Node<T> subTree)
+        {
+            Node<T> prevNode = subTree;
+            while (subTree != null)
+            {
+                prevNode = subTree;
+                subTree = subTree.Left;
+            }
+            return prevNode;
+        }
+
+        public T Find(T item)
+        {
+            Node<T> treeNode = _root;
             while (treeNode != null)
             {
-                int comparer = item.CompareTo(treeNode.Item);
-                if (comparer < 0)
+                switch (item.CompareTo(treeNode.Item))
                 {
-                    treeNode = treeNode.Left;
-                }
-                else if (comparer > 0)
-                {
-                    treeNode = treeNode.Right;
-                }
-                else if (comparer == 0)
-                {
-                    //TODO: Delete
-                    //Node changeNode = treeNode;
-                    //changeNode = changeNode.Left;
-                    //while (changeNode.Right != null)
-                    //{
-                    //    changeNode = changeNode.Right;
-                    //}
-                    //if (changeNode.Left != null)
-                    //{
-                        
-                    //}
-                    //else
-                    //{
-                    //    if (treeNode.Parent.Left == treeNode)
-                    //    {
-                    //        treeNode.Parent.Left
-                    //    }
-                    //    else
-                    //    {
-                            
-                    //    }
-                    //}
-                    return true;
+                    case -1:
+                        treeNode = treeNode.Left;
+                        break;
+                    case 0:
+                        return treeNode.Item;
+                    case 1:
+                        treeNode = treeNode.Right;
+                        break;
                 }
             }
-            return false;
+            throw new KeyNotFoundException("Item not in tree");
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -83,8 +128,8 @@ namespace DataStructures.Trees
 
         public IEnumerator<T> GetEnumerator()
         {
-            Node node = _root;
-            Array.Stack<Node> parentStack = new Array.Stack<Node>();
+            Node<T> node = _root;
+            Array.Stack<Node<T>> parentStack = new Array.Stack<Node<T>>();
             while (parentStack.Count != 0 || node != null)
             {
                 if (node != null)
@@ -99,41 +144,28 @@ namespace DataStructures.Trees
                     node = node.Right;
                 }
             }
-        } 
+        }
 
-        private class Node
+        public void Dispose()
         {
-            public T Item;
-
-            public Node Parent;
-            public Node Left;
-            public Node Right;
-
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="item"></param>
-            /// <param name="parent"></param>
-            /// <param name="left"></param>
-            /// <param name="right"></param>
-            public Node(T item, Node parent = null, Node left = null, Node right = null)
+            Node<T> node = _root;
+            Array.Stack<Node<T>> parentStack = new Array.Stack<Node<T>>();
+            while (parentStack.Count != 0 || node != null)
             {
-                Item = item;
-                Parent = parent;
-                Left = left;
-                Right = right;
-            }
-
-            public int Count
-            {
-                get
+                if (node != null)
                 {
-                    int count = 1;
-                    count += Left?.Count ?? 0;
-                    count += Right?.Count ?? 0;
-                    return count;
+                    parentStack.Push(node);
+                    node = node.Left;
+                }
+                else
+                {
+                    using (Node<T> disposeNode = parentStack.Pop())
+                    {
+                        node = disposeNode.Right;
+                    }
                 }
             }
+            _root = null;
         }
     }
 }
