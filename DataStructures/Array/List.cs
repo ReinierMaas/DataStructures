@@ -4,11 +4,29 @@ namespace DataStructures.Array
 {
     public class List<T>
     {
+        /// <summary>
+        /// Storage of the list, the backing array
+        /// </summary>
         private T[] _storage;
-        public int Count { get; private set; }
+        
+        /// <summary>
+        /// Size of the lists array
+        /// </summary>
         private int _size = 4;
-        private static int _grow = 2;
 
+        /// <summary>
+        /// Grow ratio of the backing array
+        /// </summary>
+        private const int GROW = 2;
+
+        /// <summary>
+        /// Number of elements in the list
+        /// </summary>
+        public int Count { get; private set; }
+
+        /// <summary>
+        /// Initialises a new list
+        /// </summary>
         public List()
         {
             _storage = new T[_size];
@@ -24,7 +42,7 @@ namespace DataStructures.Array
         {
             if (Count == _size)
             {
-                _size *= _grow;
+                _size *= GROW;
                 System.Array.Resize(ref _storage, _size);
             }
             _storage[Count] = item;

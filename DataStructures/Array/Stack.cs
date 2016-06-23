@@ -4,10 +4,25 @@ namespace DataStructures.Array
 {
     public class Stack<T>
     {
+        /// <summary>
+        /// Storage of the stack, the backing array
+        /// </summary>
         private T[] _storage;
-        public int Count { get; private set; }
+
+        /// <summary>
+        /// Size of the stacks array
+        /// </summary>
         private int _size = 4;
-        private static int _grow = 2;
+
+        /// <summary>
+        /// Grow ratio of the backing array
+        /// </summary>
+        private const int GROW = 2;
+
+        /// <summary>
+        /// Number of elements in the stack
+        /// </summary>
+        public int Count { get; private set; }
 
         public Stack()
         {
@@ -24,7 +39,7 @@ namespace DataStructures.Array
         {
             if (Count == _size)
             {
-                _size *= _grow;
+                _size *= GROW;
                 System.Array.Resize(ref _storage, _size);
             }
             _storage[Count] = item;
@@ -34,6 +49,7 @@ namespace DataStructures.Array
         /// <summary>
         /// Pops the item from the end of the array
         /// O(1)
+        /// Possible: InvalidOperationException
         /// </summary>
         /// <returns>Item that got pop from the stack</returns>
         public T Pop()
@@ -47,6 +63,7 @@ namespace DataStructures.Array
         /// <summary>
         /// Peek at the item at the end of the array
         /// O(1)
+        /// Possible: InvalidOperationException
         /// </summary>
         /// <returns>Item that is next to pop from the stack</returns>
         public T Peek()

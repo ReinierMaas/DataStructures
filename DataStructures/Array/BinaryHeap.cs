@@ -193,6 +193,7 @@ namespace DataStructures.Array
         /// <summary>
         /// Pop the next from the heap
         /// O(log(n))
+        /// Possible: InvalidOperationException
         /// </summary>
         /// <returns>
         /// The next item and removes it from the heap
@@ -211,6 +212,7 @@ namespace DataStructures.Array
         /// <summary>
         /// Peek at the next item on the heap
         /// O(1)
+        /// Possible: InvalidOperationException
         /// </summary>
         /// <returns>
         /// The next item and leaves it on the heap

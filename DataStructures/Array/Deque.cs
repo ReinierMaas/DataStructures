@@ -2,14 +2,40 @@
 
 namespace DataStructures.Array
 {
+    /// <summary>
+    /// TODO: Not completed implementation
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     class Dequeu<T>
     {
+        /// <summary>
+        /// Storage of the deque, the backing array
+        /// </summary>
         private T[] _storage;
-        public int Count { get; private set; }
-        public int Tail { get; private set; }
-        private int _size = 4;
-        private static int _grow = 2;
 
+        /// <summary>
+        /// Number of elements in the deque
+        /// </summary>
+        public int Count { get; private set; }
+
+        /// <summary>
+        /// Front of the stored items???
+        /// </summary>
+        public int Tail { get; private set; }
+
+        /// <summary>
+        /// Size of the deque's backing array
+        /// </summary>
+        private int _size = 4;
+
+        /// <summary>
+        /// Grow ratio of the backing array
+        /// </summary>
+        private const int GROW = 2;
+
+        /// <summary>
+        /// Initialise a new deque
+        /// </summary>
         public Dequeu()
         {
             _storage = new T[_size];
@@ -25,7 +51,7 @@ namespace DataStructures.Array
         {
             if (Count == _size)
             {
-                _size *= _grow;
+                _size *= GROW;
                 T[] prevArray = _storage;
                 _storage = new T[_size];
                 System.Array.Copy(prevArray, Tail, _storage, 0, Count - Tail);
@@ -40,6 +66,7 @@ namespace DataStructures.Array
         /// <summary>
         /// Dequeue the item from the end of the queue
         /// O(1)
+        /// Possible: InvalidOperationException
         /// </summary>
         /// <returns>Item that got dequeued from the queue</returns>
         public T Dequeue()
@@ -55,6 +82,7 @@ namespace DataStructures.Array
         /// <summary>
         /// Peek at the item at the end of the array
         /// O(1)
+        /// Possible: InvalidOperationException
         /// </summary>
         /// <returns>Item that is next to pop from the stack</returns>
         public T Peek()

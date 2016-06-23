@@ -4,12 +4,34 @@ namespace DataStructures.Array
 {
     class Queue<T>
     {
+        /// <summary>
+        /// Storage of the queue, the backing array
+        /// </summary>
         private T[] _storage;
-        public int Count { get; private set; }
-        public int Tail { get; private set; }
-        private int _size = 4;
-        private static int _grow = 2;
 
+        /// <summary>
+        /// Size of the queues array
+        /// </summary>
+        private int _size = 4;
+
+        /// <summary>
+        /// Grow ratio of the backing array
+        /// </summary>
+        private const int GROW = 2;
+
+        /// <summary>
+        /// Number of elements in the queue
+        /// </summary>
+        public int Count { get; private set; }
+
+        /// <summary>
+        /// Tail that points to the dequeable item
+        /// </summary>
+        private int _tail;
+        
+        /// <summary>
+        /// Initialises a new Queue
+        /// </summary>
         public Queue()
         {
             _storage = new T[_size];
@@ -25,14 +47,14 @@ namespace DataStructures.Array
         {
             if (Count == _size)
             {
-                _size *= _grow;
+                _size *= GROW;
                 T[] prevArray = _storage;
                 _storage = new T[_size];
-                System.Array.Copy(prevArray, Tail, _storage, 0, Count - Tail);
-                System.Array.Copy(prevArray, 0, _storage, Count - Tail, Tail);
-                Tail = 0;
+                System.Array.Copy(prevArray, _tail, _storage, 0, Count - _tail);
+                System.Array.Copy(prevArray, 0, _storage, Count - _tail, _tail);
+                _tail = 0;
             }
-            int begin = (Tail + Count) % _size;
+            int begin = (_tail + Count) % _size;
             _storage[begin] = item;
             Count++;
         }
@@ -46,9 +68,9 @@ namespace DataStructures.Array
         {
             if (Count == 0)
                 throw new InvalidOperationException();
-            T tmp = _storage[Tail];
+            T tmp = _storage[_tail];
             Count--;
-            Tail = (Tail + 1) % _size;
+            _tail = (_tail + 1) % _size;
             return tmp;
         }
 
@@ -61,7 +83,7 @@ namespace DataStructures.Array
         {
             if (Count == 0)
                 throw new InvalidOperationException();
-            return _storage[Tail];
+            return _storage[_tail];
         }
 
         /// <summary>
@@ -76,7 +98,7 @@ namespace DataStructures.Array
             {
                 if (index >= 0 && index < Count)
                 {
-                    index = (Tail + index) % _size;
+                    index = (_tail + index) % _size;
                     return _storage[index];
                 }
                 throw new IndexOutOfRangeException("Queue count: " + Count + " index: " + index);
@@ -85,7 +107,7 @@ namespace DataStructures.Array
             {
                 if (index >= 0 && index < Count)
                 {
-                    index = (Tail + index) % _size;
+                    index = (_tail + index) % _size;
                     _storage[index] = value;
                 }
                 throw new IndexOutOfRangeException("Queue count: " + Count + " index: " + index);
