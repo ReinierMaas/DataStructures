@@ -5,10 +5,29 @@ namespace DataStructures.Array
 {
     public class BinaryHeap<T> where T : IComparable
     {
+        /// <summary>
+        /// Storage of the binary heap, the backing array
+        /// </summary>
         private T[] _storage;
+
+        /// <summary>
+        /// Size of the binary heap's array
+        /// </summary>
         private int _size = 4;
+
+        /// <summary>
+        /// Grow ratio of the backing array
+        /// </summary>
         private const int GROW = 2;
+
+        /// <summary>
+        /// Switch between min heap and max heap
+        /// </summary>
         private readonly bool _maxHeap;
+
+        /// <summary>
+        /// The comparer used to compare the items to eachother
+        /// </summary>
         private readonly Comparer<T> _comparer = Comparer<T>.Default;
 
         /// <summary>
@@ -130,7 +149,7 @@ namespace DataStructures.Array
         /// Pop O(log(n))
         /// Peak O(1)
         /// </summary>
-        public BinaryHeap(bool maxHeap, Comparer<T> comparer = null)
+        public BinaryHeap(bool maxHeap = true, Comparer<T> comparer = null)
         {
             _maxHeap = maxHeap;
             _storage = new T[_size];
@@ -143,11 +162,8 @@ namespace DataStructures.Array
         /// Pop O(log(n))
         /// Peak O(1)
         /// </summary>
-        public BinaryHeap(IEnumerable<T> items, bool maxHeap = true, Comparer<T> comparer = null)
+        public BinaryHeap(IEnumerable<T> items, bool maxHeap = true, Comparer<T> comparer = null) : this(maxHeap, comparer)
         {
-            _maxHeap = maxHeap;
-            _storage = new T[_size];
-            if (comparer != null) _comparer = comparer;
             foreach (T item in items)
             {
                 Insert(item);
