@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DataStructures.Array
 {
-    public class BinaryHeap<T> where T : IComparable<T>
+    public class BinaryHeap<T> where T : IComparable
     {
         private T[] _storage;
         private int _size = 4;
@@ -11,7 +11,11 @@ namespace DataStructures.Array
         private readonly bool _maxHeap;
         private readonly Comparer<T> _comparer = Comparer<T>.Default;
 
+        /// <summary>
+        /// Number of elements in the heap
+        /// </summary>
         public int Count { get; private set; }
+
         /// <summary>
         /// Swaps to elements in storage
         /// O(1)
@@ -74,7 +78,7 @@ namespace DataStructures.Array
         /// </returns>
         private static int Child(int index)
         {
-            return (2 * index) + 1;
+            return 2 * index + 1;
         }
 
         /// <summary>
@@ -86,20 +90,12 @@ namespace DataStructures.Array
         /// </param>
         private void HeapifyUp(int index)
         {
-            while (true)
+            int parent;
+            while (index > 0 && Compare(index, parent = Parent(index)))
             {
-                if (index > 0)
-                {
-                    int parent = Parent(index);
-                    if (Compare(index, parent))
-                    {
-                        //Child preferred to parent
-                        Swap(index, parent);
-                        index = parent;
-                        continue;
-                    }
-                }
-                break;
+                //Child preferred to parent
+                Swap(index, parent);
+                index = parent;
             }
         }
 
@@ -112,36 +108,19 @@ namespace DataStructures.Array
         /// </param>
         private void HeapifyDown(int index)
         {
-            while (true)
+            int childLeft;
+            while ((childLeft = Child(index)) < Count)
             {
-                int childLeft = Child(index);
-                if (childLeft < Count)
-                {
-                    int childRight = childLeft + 1;
-                    if (Compare(childLeft, childRight))
-                    {
-                        //Left child preferred to right child
-                        if (Compare(childLeft, index))
-                        {
-                            //Left child preferred to parent
-                            Swap(index, childLeft);
-                            index = childLeft;
-                            continue;
-                        }
-                    }
-                    else
-                    {
-                        //Right child preferred to left child
-                        if (Compare(childRight, index))
-                        {
-                            //Right child preferred to parent
-                            Swap(index, childRight);
-                            index = childRight;
-                            continue;
-                        }
-                    }
-                }
-                break;
+                int childRight = childLeft + 1, largest = index;
+                if (Compare(childLeft, largest))
+                    largest = childLeft;
+                if (childRight < Count && Compare(childRight, largest))
+                    largest = childRight;
+
+                if (largest == index)
+                    break;
+                Swap(index, largest);
+                index = largest;
             }
         }
 
@@ -151,22 +130,24 @@ namespace DataStructures.Array
         /// Pop O(log(n))
         /// Peak O(1)
         /// </summary>
-        public BinaryHeap(bool maxHeap)
+        public BinaryHeap(bool maxHeap, Comparer<T> comparer = null)
         {
             _maxHeap = maxHeap;
             _storage = new T[_size];
+            if (comparer != null) _comparer = comparer;
         }
 
         /// <summary>
-        /// Create a new binary heap
+        /// Create a new binary heap initialised with an IEnumerable
         /// Insert Amortized O(log(n))
         /// Pop O(log(n))
         /// Peak O(1)
         /// </summary>
-        public BinaryHeap(IEnumerable<T> items, bool maxHeap = true)
+        public BinaryHeap(IEnumerable<T> items, bool maxHeap = true, Comparer<T> comparer = null)
         {
             _maxHeap = maxHeap;
             _storage = new T[_size];
+            if (comparer != null) _comparer = comparer;
             foreach (T item in items)
             {
                 Insert(item);
